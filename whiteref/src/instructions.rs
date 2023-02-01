@@ -18,7 +18,7 @@ impl Instruction {
         self.parameter.clone()
     }
 
-    pub fn set_parameter(&mut self, parameter: Option<String>) -> () {
+    pub fn set_parameter(&mut self, parameter: Option<String>) {
         self.parameter = parameter;
     }
 
@@ -76,7 +76,7 @@ pub fn from_str(instruction_str: &str) -> Instruction {
         }
     } else {
         Instruction {
-            command: instruction_split[0].trim().to_string().clone(),
+            command: instruction_split[0].trim().to_string(),
             parameter: Some(instruction_split[1].clone()),
         }
     }

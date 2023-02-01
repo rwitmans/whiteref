@@ -20,16 +20,16 @@ pub fn write_ws_file(program: &Program, target: &str) {
 
 fn read_ws_file(path: &str) -> Vec<u8> {
     let ws_file = File::open(path).expect("Unable to open file");
-    let metadata = fs::metadata(&path).expect("unable to read metadata");
+    let metadata = fs::metadata(path).expect("unable to read metadata");
     let mut buf_reader = BufReader::new(ws_file);
     let mut buffer = vec![0; metadata.len() as usize];
-    buf_reader.read(&mut buffer).unwrap();
+    buf_reader.read_exact(&mut buffer).unwrap();
 
     buffer
 }
 
 pub fn get_whitespace_program(source: &str) -> Result<Program, WsError> {
-    let ws_file = read_ws_file(&source);
+    let ws_file = read_ws_file(source);
 
     Program::parse(ws_file)
 }
@@ -84,7 +84,7 @@ pub fn dissasemble_whitespace_file(args: Vec<String>) {
 
     let source = &args[2];
 
-    let program = match get_whitespace_program(&source) {
+    let program = match get_whitespace_program(source) {
         Ok(program) => program,
         Err(error) => {
             println!(
@@ -111,7 +111,7 @@ pub fn refactor_whitespace_file(args: Vec<String>) {
     let source = &args[2];
     let target = &args[3];
 
-    let mut program = match get_whitespace_program(&source) {
+    let mut program = match get_whitespace_program(source) {
         Ok(program) => program,
         Err(error) => {
             println!(
@@ -126,7 +126,7 @@ pub fn refactor_whitespace_file(args: Vec<String>) {
 
     program.minify();
 
-    write_ws_file(&program, &target);
+    write_ws_file(&program, target);
 
     println!("Creating the new whitespace file has been succesful.");
 }
@@ -134,7 +134,7 @@ pub fn refactor_whitespace_file(args: Vec<String>) {
 pub fn run_whitespace_file(args: Vec<String>) {
     let source = &args[2];
 
-    let program = match get_whitespace_program(&source) {
+    let program = match get_whitespace_program(source) {
         Ok(program) => program,
         Err(error) => {
             println!(
@@ -145,7 +145,7 @@ pub fn run_whitespace_file(args: Vec<String>) {
         }
     };
 
-    run_whitespace_program(program.clone(), None);
+    run_whitespace_program(program, None);
 
     println!("Succesfully ran the whitespace file.");
 }
